@@ -1,5 +1,8 @@
-from .bekesh import bekesh
-from .kojast import kojast
+from .generate import generate_plate
+from .generate import generate_plates
+from .generate import random_generate_plate
 
-__version__ = '1.0.0'
 
+from .location import location
+
+__version__ = '1.1.0'

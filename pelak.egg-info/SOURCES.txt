@@ -4,8 +4,8 @@ pyproject.toml
 setup.py
 pelak/__init__.py
 pelak/assets.py
-pelak/bekesh.py
-pelak/kojast.py
+pelak/generate.py
+pelak/location.py
 pelak.egg-info/PKG-INFO
 pelak.egg-info/SOURCES.txt
 pelak.egg-info/dependency_links.txt
