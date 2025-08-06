@@ -1,0 +1,253 @@
+
+
+# Pelak
+
+**Pelak** is a practical Python library for generating, searching, and analyzing Iranian vehicle license plate codes and images.  
+It allows you to create high-quality, standard license plate images programmatically, work with city/province mappings, search plate data, and more.
+
+<img width="1400" height="800" alt="Figure_1" src="https://github.com/user-attachments/assets/625b84e2-29fc-4904-8922-82e7dcea271e" />
+
+## Features
+
+- **Generate standard license plate images** for almost all types used in Iran (normal, taxi, police, military, etc.) from a plate code string.
+- **Random and custom plate code/image generation** based on city, province (state), and middle letter.
+- **Easy bidirectional mapping** between codes, middle (Persian) letters and cities, customizable for your dataset.
+- **Search and fetch location (city) by state code and middle letter** .
+- **Batch/generator utilities** for producing many plates for data augmentation, ML, or synthetic datasets.
+- **Fully supports Unicode/Persian letters** and conversions between Persian and Latin representations.
+- **Includes assets** (plate layouts, font, mappings) for realistic output without dependencies except Python & Pillow.
+- **Data-driven:** All mapping/search functions use a simple txt file (`city_plateinfo.txt`) so you can extend or update data.
+
+---
+
+## Installation
+
+```bash
+pip install pelak
+```
+
+Requires: **Python 3.7+** and **Pillow** (installed automatically with pip).
+
+---
+
+## Quick Examples
+
+### Generate an Image from Plate Code
+
+```python
+from pelak import generate_plate
+
+# Create and show "21ب34123" (Tehran style) as an image:
+img = generate_plate("21ب34123", show_img=True)
+```
+
+<img width="595" height="121" alt="output1" src="https://github.com/user-attachments/assets/9d03f064-33cd-4841-9b38-6d877ea47483" />
+
+You can also save the image as PNG:
+
+```python
+img = generate_plate("13معلول78510", out_path="output2.png")
+```
+
+<img width="595" height="122" alt="output2" src="https://github.com/user-attachments/assets/81252625-512d-42fe-a700-46540aff3bb9" />
+
+> or use both of them for saving and show result.
+---
+
+### Random Plate Generation by City, Province, or Letter
+
+You can generate a random, valid license plate image for example Tehran, province 11, or any valid city, optionally specifying the middle letter:
+
+```python
+from pelak import random_generate_plate
+
+# Random valid plate for Tehran
+img = random_generate_plate(city="Tehran", show_img=True)
+
+# Random valid plate for province/state code 11
+img = random_generate_plate(state_code="11", show_img=True)
+
+# Random valid plate for specific city and province (e.g. Esfahan with code 13)
+img = random_generate_plate(city="Esfahan", state_code="13", show_img=True)
+
+# Random valid plate for Tehran and specific middle letter, Persian or Latin input
+img = random_generate_plate(city="Tehran", letter="ن", show_img=True)
+img = random_generate_plate(city="Tehran", letter="V", show_img=True)
+```
+<img width="595" height="121" alt="output3" src="https://github.com/user-attachments/assets/51a681c3-c965-48c1-8985-2594a8521fd5" />
+<img width="595" height="121" alt="output4" src="https://github.com/user-attachments/assets/8939cfe3-d8b9-4628-9062-2a707d10786e" />
+<img width="595" height="121" alt="output5" src="https://github.com/user-attachments/assets/1391cc5a-e1fb-41be-848d-9eb336c73657" />
+<img width="595" height="121" alt="output6" src="https://github.com/user-attachments/assets/d27fe92c-e8bf-4554-a5aa-d32d861da5c6" />
+<img width="595" height="121" alt="output7" src="https://github.com/user-attachments/assets/24b5badf-02ea-4e42-9941-dcf6429f9c77" />
+
+---
+
+### Get City Name by Code and Letter
+
+```python
+from pelak import location
+
+city_name = location("11", "b")  # Output: Tehran, Karaj, etc. (depending on your city_plateinfo.txt)
+print(city_name)
+```
+> TEHRAN
+---
+
+### Batch Plate Generation
+
+You can generate multiple plate images at once using `generate_plates()`:
+
+```python
+from pelak import generate_plates
+
+plate_list = ["21ب34123", "12ج45134", "34س23113"]
+images = generate_plates(plate_list, show_img=False)
+```
+
+For special types (e.g. 'گ' for temporary plates) you need to provide dates (Year and month).
+
+---
+
+## Data File
+
+All mapping/searches use the file:
+- `city_plateinfo.txt` in the package's `data/` directory
+
+Each line:  
+`latin_middle_letter,state_code,city_name`  
+Example:
+```
+B,11,TEHRAN
+B,68,KARAJ
+S,13,TABRIZ
+...
+```
+
+---
+
+## API Reference
+
+### `generate_plate()`
+
+```python
+generate_plate(plate_code: str, out_path: str=None, show_img: bool=False,
+               extra_month: str=None, extra_year: str=None)
+```
+> Generate an Iranian license plate PNG image based on a code string.
+
+- `plate_code`: String, e.g. `"21ب34123"`. (See below for formatting.)
+- `out_path`: Path to save the image (optional).
+- `show_img`: Whether to show the image (default: False).
+- `extra_month`, `extra_year`: For special plates only ("گذر" = temporary).
+
+Recognized types:  
+- `normal` (civilian), `معلول` (disabled), `الف` (reserved), `ت` (taxi), `ع` (public), `پ` (police), `ث` (Sepah), `ش` (army), `گ` (temporary), `ک` (military), `ف` (leader), `ز` (defense), …
+
+### `generate_plates(plates, out_path=None, show_img=False, extra_month=None, extra_year=None)`
+
+Batch generator.  
+If a plate is special type (e.g. 'گ'), provide extra_month and extra_year as lists.
+
+---
+
+### `random_generate_plate`
+
+```python
+random_generate_plate(
+    city=None,
+    state_code=None,
+    letter=None,
+    txt_file_path='city_plateinfo.txt',
+    show_img=False,
+    out_path=None
+)
+```
+
+ 
+
+**Generate a random, valid Iranian license plate image using flexible filters.**
+
+- **Parameters:**
+  - `city`: (str, optional) Name of the city, e.g. `"Tehran"`.
+  - `state_code`: (str, optional) 2-digit province code, e.g. `"11"`.
+  - `letter`: (str, optional) The middle letter; accepted in both Persian (e.g. `ب`) and Latin (`B`), mapping handled internally.
+  - `txt_file_path`: (str, optional) Path to the plate mapping file; defaults to `'city_plateinfo.txt'`.
+  - `show_img`: (bool, optional) Whether to show the generated image; default is `False`.
+  - `out_path`: (str, optional) Filename to save the image.
+
+- **Returns:**  
+  The generated image object, after displaying and/or saving it if requested.
+
+- **Usage Example:**
+    ```python
+    img = random_generate_plate(city="Tehran", letter="ب", out_path="random_tehran.png")
+    ```
+
+- **Letter mapping:**  
+    You can specify the middle letter either in Persian (e.g., `ب`) or its equivalent Latin character (`B`). The package will handle mapping and formatting internally.
+
+---
+
+### `location`
+
+```python
+location(state_code, letter, txt_file_path="city_plateinfo.txt")
+```
+
+**Return the city name for a specific plate code and middle letter.**
+
+- **Parameters:**
+  - `state_code`: (str) 2-digit state/province code, e.g. `"11"`.
+  - `letter`: (str) Persian middle letter, e.g., `"ب"`.
+  - `txt_file_path`: (str, optional) Path to mapping file.
+- **Returns:**  
+  The city name (str) matching your query.
+
+- **Exceptions:**  
+  Raises `ValueError` if no matching city is found or the mapping file is missing.
+
+- **Usage Example:**
+    ```python
+    city = location("11", "ب")
+    print(city)  # e.g., Tehran
+    ```
+
+---
+
+## How Random Generation Works
+
+- You can specify `city`, `state_code`, and/or `letter` as filters, in any combination.
+- If only `city` is provided, a random valid combination will be selected from available records for that city.
+- If a `letter` is given (Persian or English), it is mapped internally and used to filter results, and then mapped back for output.
+- **All results are guaranteed to be valid plates** for actual cities/codes present within your `city_plateinfo.txt` mapping file.
+
+
+---
+
+## Data & Assets
+
+All necessary templates (PNGs), the required font file (`Plate_font.ttf`), and the city/plate code mapping text (`city_plateinfo.txt`) are stored in the package's `data/` folder (see `setup.py` for a full list of included files).
+
+---
+
+## Maintainer Notes
+
+I am developing the initial versions of the library and it may have many bugs, problems and weaknesses that will be fixed in future versions. I would appreciate it if you have any suggestions or bugs, please create an issue on GitHub.
+
+---
+
+## Contributors
+
+ [Github](https://github.com/RezaGooner/pelak) 
+
+---
+
+## License
+
+MIT
+
+---
+
+For bug reports or feature requests, please open an issue on the [GitHub repository](https://github.com/RezaGooner/pelak).
+
+---
