@@ -244,11 +244,12 @@ I am developing the initial versions of the library and it may have many bugs, p
 
 ## License
 
-MIT
+[MIT](license)
 
 ---
 
 For bug reports or feature requests, please open an issue on the [GitHub repository](https://github.com/RezaGooner/pelak).
 
 ---
+
 
