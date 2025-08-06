@@ -2,7 +2,7 @@
 
 # Pelak
 
-**Pelak** is a practical Python library for generating, searching, and analyzing Iranian vehicle license plate codes and images.  
+**Pelak** is a practical [Python library](https://pypi.org/project/pelak/) for generating, searching, and analyzing Iranian vehicle license plate codes and images.  
 It allows you to create high-quality, standard license plate images programmatically, work with city/province mappings, search plate data, and more.
 
 <img width="1400" height="800" alt="Figure_1" src="https://github.com/user-attachments/assets/625b84e2-29fc-4904-8922-82e7dcea271e" />
@@ -251,3 +251,4 @@ MIT
 For bug reports or feature requests, please open an issue on the [GitHub repository](https://github.com/RezaGooner/pelak).
 
 ---
+
